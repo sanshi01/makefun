@@ -1,27 +1,248 @@
-# makefun
+# 算法层 README
 
-[
+> 用途：给协作方 Codex / 算法 Worker / 装配工程师快速理解当前算法文档怎么读、怎么串、每份文件负责什么。  
+> 适用范围：当前三剧场版本、12 动物画像体系、报告装配前的标准化 JSON 产出。  
+> 最后更新：2026-05-22
 
-MAKE.FUN
+---
 
-news-image-20261125.svg
+## 一、先读结论
 
-](https://make.fun/bounty/news-image-20261125?utm_source=github&utm_medium=readme&utm_campaign=news-image-20261125)
-[
+当前算法链路只有一条正式主线：
 
-MAKE.FUN
+```text
+D1 底层驱动
+→ D2 能量姿态
+→ D3 三剧场主影判定
+→ 主剧场 30 亚型
+→ 12 画像映射
+→ Mix 附录补充证据
+→ 报告装配输入
+```
 
-rank.svg
+算法文件只负责“算出结构化结果”，不负责报告正文怎么写。
 
-](https://make.fun/bounty/news-image-20261125/leaderboard?utm_source=github&utm_medium=readme&utm_campaign=news-image-20261125)
-[
+报告正文、画像文案、练习方案、prompt 合同都在 `报告装配知识库/`、`12画像/`、`装配工程/` 里，不要混进算法层。
 
-MAKE.FUN
+---
 
-reward.svg
+## 二、推荐阅读顺序
 
-](https://make.fun/bounty/news-image-20261125?utm_source=github&utm_medium=readme&utm_campaign=news-image-20261125)
+对方 Codex 第一次进来，按这个顺序读：
 
-A one-image digest of 25 November 2026 world news: main.py copies the supplied entry.png (1024×1024) to /output/entry.png, deterministically and with no network access.
+1. `算法/README.md`  
+   先了解文件地图和使用边界。
 
-Entered on make.fun · AI agents build software for cash rewards
+2. `算法/【内部技术文档】家长教养行为测评算法逻辑 (v1.0).md`  
+   算法总入口，理解完整链路。
+
+3. `算法/算法-D1底层驱动判定规范-v0.1.md`  
+   看 D1 怎么判。
+
+4. `算法/算法-D2算法v5.2.md` + `算法/算法-dim2配置标准概率分布及场景化修正表（P 分布）.md`  
+   看 D2 公开主标签、概率分布、后台盲点诊断和场景修正。
+
+5. `算法/算法-D3三剧场主影判定规范-v0.1.md`  
+   看主剧场、影子剧场怎么选。
+
+6. `算法/维度三30亚型判定逻辑表.md`  
+   看主剧场内 Q1/Q2/Q3 行为序列怎么落到 30 亚型。
+
+7. `算法/算法-12画像映射规范-v0.1.md`  
+   看 D1 + D2 + D3 怎么收敛成 12 画像；P12 猫咪的 `p12_branch` 也在这里。
+
+8. Mix 附录：
+   - `算法/算法-Fmix汇总算法_小学生版_v3.0.md`
+   - `算法/算法-Fmix汇总算法_青春期版_v4.0.md`
+   - `算法/算法-Emix后验校准算法_青春期剧场2_v1.0.md`
+
+9. `算法/首页场景选择算法-v0.1.md`  
+   只在需要首页共鸣场景时读。
+
+---
+
+## 三、正式文件清单
+
+| 文件 | 定位 | 主要输入 | 主要输出 | 使用提醒 |
+|---|---|---|---|---|
+| `【内部技术文档】家长教养行为测评算法逻辑 (v1.0).md` | 算法总入口 | 全链路上下文 | 正式阅读顺序、边界 | 只看框架，不在这里找具体分值 |
+| `算法-D1底层驱动判定规范-v0.1.md` | D1 底层驱动 | 用户动机相关结果 | `dim1_label`、驱动方向 | 只判 `order / connection`，不直接判画像 |
+| `算法-D2算法v5.2.md` | D2 主算法 | 三剧场 Q 数据、P 分布 | `dim2_label`、D2 概率、稳定度、后台盲点诊断 | 公开主标签按 `no_harden / P50_full Top1`；`harden / P50_label` 只作后台诊断 |
+| `算法-dim2配置标准概率分布及场景化修正表（P 分布）.md` | D2 配置表 | 行为选项、场景信息 | E/S/F 概率基础配置 | 是 D2 的支撑表，不单独产出画像 |
+| `算法-D3三剧场主影判定规范-v0.1.md` | 主剧场/影子剧场选择 | 三个剧场的 D2 对齐、分数、风险码 | `primary_scene_id`、`shadow_scene_id`、对应亚型 | 已吸收旧主剧场选择规则，是当前正式入口 |
+| `维度三30亚型判定逻辑表.md` | 主剧场内亚型表 | 主剧场 Q1/Q2/Q3 行为序列 | 30 亚型、奇偶稳态标记 | 不负责选主剧场，只处理已选主剧场内部 |
+| `算法-12画像映射规范-v0.1.md` | 画像映射 | D1、D2、D3、30 亚型结果 | `portrait_id`、`portrait_name`、`portrait_parity`、`p12_branch` | P12 猫咪输出 `a / b / bal` 三分支 |
+| `算法-Fmix汇总算法_小学生版_v3.0.md` | 小学生 F Mix 附录 | 小学生三剧场 F 子型证据 | F1/F2/F3 后验与低置信补充 | 只提供证据，不改写 D1/D2/画像 |
+| `算法-Fmix汇总算法_青春期版_v4.0.md` | 青春期 F Mix 附录 | 青春期三剧场 F 子型证据 | F1/F2/F3 后验与低置信补充 | 只提供证据，不改写 D1/D2/画像 |
+| `算法-Emix后验校准算法_青春期剧场2_v1.0.md` | 青春期剧场二 E Mix 附录 | 青春期剧场二 E Mix 相关证据 | E 子型后验校准 | 只服务特定场景的 E Mix |
+| `首页场景选择算法-v0.1.md` | 首页展示场景 | 用户整体结果、剧场结果 | `opening_scene_id` 等 | 首页场景不等于报告主剧场 |
+
+---
+
+## 四、核心输出字段
+
+算法 Worker 最终要产出供装配端使用的标准化 JSON。关键字段包括：
+
+| 字段 | 来源算法 |
+|---|---|
+| `assessment.portrait_id` | 12 画像映射 |
+| `assessment.portrait_name` | 画像映射查表 |
+| `assessment.scene_id` | 用户当前主剧场 / 装配输入 |
+| `assessment.route_class` | 3.1 Q 值二元路由规则，不在当前算法主文档里展开 |
+| `assessment.d1_value_dir` | D1 / 画像映射 |
+| `assessment.d2_label` | D2 |
+| `assessment.d2_label_no_harden` | D2 后台留痕，等同公开 D2 主标签 |
+| `assessment.d2_label_harden` | D2 后台盲点诊断，不对用户公开 |
+| `assessment.blindspot_enabled` / `assessment.blindspot_direction` | D2 后台盲点诊断，不对用户公开 |
+| `assessment.core_concern_keyword` | 画像核心担忧词查表；P12 看 `p12_branch` |
+| `derived.child_age_band` | `scene_id` 派生，小学 / 青春期 |
+| `derived.p12_branch` | 仅 P12 使用，来自 `算法-12画像映射规范-v0.1.md` |
+| `metadata.algo_version` | 算法 Worker 当前版本 |
+
+P12 猫咪分支必须按以下口径输出：
+
+| 条件 | `p12_branch` | 报告素材版本 |
+|---|---|---|
+| F1 证据占优 | `a` | 猫咪 F1 版 |
+| F2 证据占优 | `b` | 猫咪 F2 版 |
+| F1/F2 证据不足、混合或主要是 F3 | `bal` | 猫咪通用版 |
+| 非 P12 | `null` | 不使用猫咪分支 |
+
+### D2 公开字段与后台诊断字段边界
+
+从 2026-05-22 起：
+
+- 用户公开主画像、公开 `assessment.d2_label`、报告附录能量分布图，统一使用 `no_harden / P50_full Top1`。
+- `harden / P50_label` 只保留为后台盲点诊断，不影响用户公开画像。
+- 用户侧 API 不得直接暴露 `harden`、`no_harden`、`p50_full`、`p50_label`、`blindspot_direction` 等字段名。
+- 若前端需要附录能量图，API 应输出转译后的 `appendix_energy_distribution`，而不是原始诊断字段。
+- 后台/admin/debug 可以保留完整诊断字段，用于人工复核和内部解读。
+
+---
+
+## 五、Mix 算法怎么用
+
+Mix 算法不是主链路入口，只是证据补充。
+
+### F Mix
+
+使用场景：
+
+- 题目中出现 `FMix`
+- F 容器选项需要继续判断 F1/F2/F3
+- P12 猫咪需要判断 `p12_branch`
+
+区分：
+
+- 小学生用 `算法-Fmix汇总算法_小学生版_v3.0.md`
+- 青春期用 `算法-Fmix汇总算法_青春期版_v4.0.md`
+
+限制：
+
+- Fmix 不能直接改写 `dim2_label`
+- Fmix 不能直接改写 `portrait_id`
+- Fmix 只能向 P12 分支判定提供证据
+
+### E Mix
+
+使用场景：
+
+- 当前只处理青春期剧场二的 E Mix 后验校准
+- 不作为全局 E 子型主算法入口
+
+---
+
+## 六、主剧场、首页场景、报告场景不要混用
+
+这三个概念很容易混：
+
+| 概念 | 文件 | 用途 |
+|---|---|---|
+| 主剧场 `primary_scene_id` | `算法-D3三剧场主影判定规范-v0.1.md` | 报告正文重点复盘的剧场 |
+| 影子剧场 `shadow_scene_id` | `算法-D3三剧场主影判定规范-v0.1.md` | 风险提醒与补充解释 |
+| 首页场景 `opening_scene_id` | `首页场景选择算法-v0.1.md` | 报告开头共鸣场景 |
+
+规则：
+
+- 首页场景不能替代主剧场。
+- 主剧场不能反向改写 D1 / D2。
+- 影子剧场不直接决定画像。
+
+---
+
+## 七、非现行算法文件怎么处理
+
+`算法/非现行算法/` 里的文件只用于：
+
+1. 追溯历史决策。
+2. 对比旧规则为什么废弃。
+3. 找旧术语来源。
+
+默认不要用它们做当前计算。
+
+如果正式文件和非现行文件冲突，以正式文件为准。
+
+如果总入口或旧工程文档里还出现旧文件名，例如旧版主剧场选择规则，以当前正式文件 `算法-D3三剧场主影判定规范-v0.1.md` 为准。
+
+---
+
+## 八、对方 Codex 执行任务时的建议流程
+
+### 只想理解算法
+
+读：
+
+1. 本 README
+2. 算法总入口
+3. D1 / D2 / D3 / 30 亚型 / 12 画像映射
+
+不要读：
+
+- `非现行算法/`
+- 报告 prompt
+- 画像长文资产
+
+### 要实现算法 Worker
+
+读：
+
+1. 本 README
+2. `装配工程/标准化 JSON 输入规范-v0.1.md`
+3. `装配工程/算法-Worker-工程规范-v0.1.md`
+4. 正式算法链各文件
+
+重点输出：
+
+- 标准化 JSON
+- `portrait_id`
+- `route_class`
+- `d1_value_dir`
+- `d2_label`
+- `p12_branch`
+- `core_concern_keyword`
+
+### 要排查报告装配问题
+
+算法层只排查：
+
+- 输入字段是否正确
+- `portrait_id` 是否正确
+- `p12_branch` 是否正确
+- `route_class` 是否正确
+- `core_concern_keyword` 是否与画像/分支一致
+
+报告文字问题去看：
+
+- `报告装配知识库/`
+- `装配工程/`
+- `12画像/`
+
+---
+
+## 九、当前注意事项
+
+1. `p12_branch` 已从 a/b 双分支扩展为 `a / b / bal` 三分支。
+2. P12 的 `core_concern_keyword` 必须跟 `p12_branch` 一起查表。
+3. 主剧场选择规则已经并入 D3 文档，旧文件只保留历史参考。
+4. Fmix 分小学生版和青春期版，不要混用。
+5. 算法文件不写报告正文，不写 prompt，不写画像文案。
